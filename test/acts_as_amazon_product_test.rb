@@ -27,6 +27,11 @@ ActiveRecord::Base.connection.create_table :movies do |t|
   t.column :asin, :string
 end
 
+ActiveRecord::Base.connection.create_table :magazines do |t|
+  t.column :name, :string
+  t.column :asin, :string
+end
+
 ActiveRecord::Base.connection.create_table :amazon_products do |t|  # , :id => false
   t.column :asin, :string
   t.column :xml, :text
@@ -45,6 +50,10 @@ class Movie < ActiveRecord::Base
   acts_as_amazon_product
 end
 
+class Magazine < ActiveRecord::Base
+  acts_as_amazon_product :search_index => 'Magazines'
+end
+
 AmazonProduct.delete_all
 
 class ActAsAmazonProductTest < Test::Unit::TestCase
@@ -55,6 +64,8 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
       @book_ror = Book.create(:title => 'Rails Recipes')
       @book_perl = Book.create(:title => 'Perl')
       @movie_dh = Movie.create(:name=>'Live Free or Die Hard', :asin=>'B000VNMMRA')
+      Magazine.delete_all
+      @mag_lci = Magazine.create(:name => 'La Cucina Italiana')
     end
     
     def test_isbn
@@ -65,6 +76,11 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     def test_title
       assert_not_nil(@book_gtd.amazon)
       assert_equal("Getting Things Done: The Art of Stress-Free Productivity", @book_gtd.amazon.title)
+    end
+    
+    def test_magazine
+      assert_not_nil(@mag_lci.amazon)
+      assert_equal("B00009XFML", @mag_lci.amazon.asin)
     end
     
     def test_small_image
