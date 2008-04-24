@@ -1,0 +1,17 @@
+= 1.2
+=== 24th April, 2008
+* Integrate changes
+* Changed scm to Git and moved repository to github.com
+
+= 1.1
+=== 3rd November, 2007
+* Use defaults for access_key and associate_tag from the environment: AMAZON_ACCESS_KEY_ID, AMAZON_ASSOCIATE_TAG
+* Added example.rb
+
+= 1.0
+=== 21st September, 2007
+
+* Initial release as a gem
+* Caches response from Amazon
+* Some basic tests.  Run "rake test"
+

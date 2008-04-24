@@ -1,36 +1,8 @@
-acts_as_amazon_product
-    by Scott Nedderman and Chris Beck
-    http://rubyforge.org/projects/aaap/
+= ActsAsAmazonProduct
 
-== DESCRIPTION:
-  
 This "acts_as" module makes it extremely simple to add Amazon integration to an existing model.  
 
-== FEATURES/PROBLEMS:
-  
-* Simplifies integration with Amazon ECS
-* Caches response from Amazon
-* Some basic tests.  Run "rake test"
-
-== SYNOPSIS:
-
-class Book < ActiveRecord::Base
-  acts_as_amazon_product :asin => 'isbn', :name => 'title', :access_key => '0123456', :associate_tag => 'assoc-20'
-end
-
-@book = Book.new(:title => 'Getting Things Done')
-@book.amazon.isbn
-@book.amazon.title    
-@book.amazon.small_image_url
-@book.amazon.get('itemattributes/foobar')
-
-== REQUIREMENTS:
-
-* amazon-ecs (>=0.5.1)
-
-== INSTALL:
-
-* sudo gem install acts_as_amazon_product
+== Setup
 
 This code does not require changing any current database tables.  It only requires adding one migration for a single new table used to cache responses from Amazon:
 
@@ -42,7 +14,7 @@ This code does not require changing any current database tables.  It only requir
 	  t.column :amazonable_type, :string, :limit => 15, :default => "", :null => false
 	end
 
-== USAGE
+== Using acts_as_amazon_product
 
 Add the "acts_as" line to your model.  Only :access_key is required.  The :asin and :name assignments override what attributes in your class should be used for a direct lookup (item_looup) or general search (item_search).  If no value is assigned to :asin then a general search is made and the first item (sorted by salesrank) is assigned (this functionality will likely change).
 
@@ -63,32 +35,17 @@ You can now access the Amazon data in your views like so (see):
 	or
 	@book.amazon.get('itemattributes/foobar')
 
-== TESTS
+== Unit tests
 
 There are tests you can run in the [gem]/test directory.  Just create a test/config.yml from the example and run "Rake test" from the [gem] directory.
 
+= Credits
+acts_as_amazon_product was credited by Scott Nedderman and Chris Beck from netphase.com
 
-== LICENSE:
+We'd love to here how you like it.  Also, if you'd like us to help out with your next project, let us know. 
 
-(The MIT License)
+http://netphase.com
 
-Copyright (c) 2007
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
