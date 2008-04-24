@@ -1,6 +1,6 @@
 = 1.2
 === 24th April, 2008
-* Integrate changes
+* Accepts search_index parameter to work better with Magazines (patch from Parker Morse)
 * Changed scm to Git and moved repository to github.com
 
 = 1.1
