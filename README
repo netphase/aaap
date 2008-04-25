@@ -1,10 +1,12 @@
 = ActsAsAmazonProduct
 
-This "acts_as" module makes it extremely simple to add Amazon integration to an existing model.  
+This "acts_as" module makes it extremely simple to add Amazon integration to an 
+existing model.  
 
 == Setup
 
-This code does not require changing any current database tables.  It only requires adding one migration for a single new table used to cache responses from Amazon:
+This code does not require changing any current database tables.  It only requires 
+adding one migration for a single new table used to cache responses from Amazon:
 
 	ActiveRecord::Base.connection.create_table :amazon_products do |t|
 	  t.column :asin, :string
@@ -16,12 +18,17 @@ This code does not require changing any current database tables.  It only requir
 
 == Using acts_as_amazon_product
 
-Add the "acts_as" line to your model.  Only :access_key is required.  The :asin and :name assignments override what attributes in your class should be used for a direct lookup (item_looup) or general search (item_search).  If no value is assigned to :asin then a general search is made and the first item (sorted by salesrank) is assigned (this functionality will likely change).
+Add the "acts_as" line to your model.  Only :access_key is required.  The :asin and 
+:name assignments override what attributes in your class should be used for a direct 
+lookup (item_looup) or general search (item_search).  If no value is assigned to :asin 
+then a general search is made and the first item (sorted by salesrank) is assigned 
+(this functionality will likely change).
 
 	require 'acts_as_amazon_product'
 
 	class Book < ActiveRecord::Base
-	  acts_as_amazon_product :asin => 'isbn', :name => 'title', :access_key => '0123456', :associate_tag => 'assoc-20'
+	  acts_as_amazon_product :asin => 'isbn', :name => 'title', 
+				:access_key => '0123456', :associate_tag => 'assoc-20'
 	end
 
 You can now access the Amazon data in your views like so (see):
@@ -37,12 +44,14 @@ You can now access the Amazon data in your views like so (see):
 
 == Unit tests
 
-There are tests you can run in the [gem]/test directory.  Just create a test/config.yml from the example and run "Rake test" from the [gem] directory.
+There are tests you can run in the [gem]/test directory.  Just create a 
+test/config.yml from the example and run "Rake test" from the [gem] directory.
 
 = Credits
-acts_as_amazon_product was credited by Scott Nedderman and Chris Beck from netphase.com
+acts_as_amazon_product was created by Scott Nedderman and Chris Beck from netphase.com
 
-We'd love to here how you like it.  Also, if you'd like us to help out with your next project, let us know. 
+We'd love to here how you like it.  Also, if you'd like us to help out with your next 
+project, let us know. 
 
 http://netphase.com
 
