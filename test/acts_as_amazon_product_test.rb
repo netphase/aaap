@@ -48,11 +48,12 @@ class Book < ActiveRecord::Base
 end
 
 class Movie < ActiveRecord::Base
-  acts_as_amazon_product
+  acts_as_amazon_product :access_key => @@access_key, :associate_tag => @@associate_tag
 end
 
 class Magazine < ActiveRecord::Base
-  acts_as_amazon_product :search_index => 'Magazines'
+  acts_as_amazon_product :search_index => 'Magazines', :access_key => @@access_key,
+    :associate_tag => @@associate_tag
 end
 
 AmazonProduct.delete_all
