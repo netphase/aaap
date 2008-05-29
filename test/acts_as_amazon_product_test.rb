@@ -101,8 +101,8 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     end
 
     def test_find_with_multiple
-      assert_equal("Rails Recipes (Pragmatic Programmers)", @book_ror.amazon.title)
-      assert_equal("Chad Fowler", @book_ror.amazon.author)
+      assert_equal("Advanced Rails Recipes: 84 New Ways to Build Stunning Rails Apps", @book_ror.amazon.title)
+      assert_equal("Mike Clark", @book_ror.amazon.author)
     end
     
     def test_update
