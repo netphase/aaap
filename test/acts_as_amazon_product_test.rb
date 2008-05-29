@@ -15,6 +15,7 @@ ActiveRecord::Base.establish_connection(config["database"])
 ActiveRecord::Base.connection.drop_table :amazon_products rescue nil
 ActiveRecord::Base.connection.drop_table :books rescue nil
 ActiveRecord::Base.connection.drop_table :movies rescue nil
+ActiveRecord::Base.connection.drop_table :magazines rescue nil
 
 ActiveRecord::Base.connection.create_table :books do |t|
   t.column :title, :string
