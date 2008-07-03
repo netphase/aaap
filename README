@@ -6,15 +6,10 @@ existing model.
 == Setup
 
 This code does not require changing any current database tables.  It only requires 
-adding one migration for a single new table used to cache responses from Amazon:
+adding one migration for a single new table used to cache responses from Amazon.
+Run the following to create the migration:
 
-	ActiveRecord::Base.connection.create_table :amazon_products do |t|
-	  t.column :asin, :string
-	  t.column :xml, :text
-	  t.column :created_at, :datetime, :null => false
-	  t.column :amazonable_id, :integer, :default => 0, :null => false
-	  t.column :amazonable_type, :string, :limit => 15, :default => "", :null => false
-	end
+  script/generate acts_as_amazon_product_migration
 
 == Using acts_as_amazon_product
 
