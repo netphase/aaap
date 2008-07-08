@@ -122,4 +122,9 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
       assert_equal 'Bruce Willis, Timothy Olyphant, Justin Long, Maggie Q, Cliff Curtis',
         @movie_dh.amazon.get('itemattributes/actor')
     end
+    
+    def test_accepts_a_custom_separator
+      assert_equal 'Bruce Willis | Timothy Olyphant | Justin Long | Maggie Q | Cliff Curtis',
+        @movie_dh.amazon.hdoc('itemattributes/actor', ' | ')      
+    end
 end
