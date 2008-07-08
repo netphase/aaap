@@ -5,7 +5,8 @@ class AmazonProduct < ActiveRecord::Base
 
   def hdoc(key, separator = ', ')
     @doc ||= Hpricot.XML(xml)
-    values = (@doc/key).collect {|e| e.inner_html } * separator
+    values = (@doc/key).collect {|e| e.inner_html }
+    values *= separator unless separator.nil?
     values unless values.blank?
   end
 
