@@ -3,9 +3,10 @@ require 'hpricot'
 class AmazonProduct < ActiveRecord::Base
 #  belongs_to :amazonable, :polymorphic => true
 
-  def hdoc(key)
+  def hdoc(key, separator = ', ')
     @doc ||= Hpricot.XML(xml)
-    @doc.at(key).inner_html
+    values = (@doc/key).collect {|e| e.inner_html } * separator
+    values unless values.blank?
   end
 
   def get(key)

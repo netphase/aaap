@@ -105,6 +105,10 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
       assert_equal("Mike Clark", @book_ror.amazon.author)
     end
     
+    def test_returns_nil_if_attribute_not_found
+      assert_equal(nil, @book_ror.amazon.get('contributor'))
+    end
+    
     def test_update
       assert_not_nil(@book_perl.amazon)
       isbn = @book_perl.amazon.isbn
@@ -115,6 +119,7 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
 
     def test_product_with_all_defaults
       assert_not_nil(@movie_dh.amazon)
-      assert_equal 'Bruce Willis', @movie_dh.amazon.get('itemattributes/actor')
+      assert_equal 'Bruce Willis, Timothy Olyphant, Justin Long, Maggie Q, Cliff Curtis',
+        @movie_dh.amazon.get('itemattributes/actor')
     end
 end
