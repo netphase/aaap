@@ -125,11 +125,11 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
   
   def test_accepts_a_custom_separator
     assert_equal 'Bruce Willis | Timothy Olyphant | Justin Long | Maggie Q | Cliff Curtis',
-      @movie_dh.amazon.hdoc('itemattributes/actor', ' | ')      
+      @movie_dh.amazon.get('itemattributes/actor', ' | ')      
   end
   
   def test_returns_array_if_separator_is_nil
     assert_equal ['Bruce Willis', 'Timothy Olyphant', 'Justin Long', 'Maggie Q', 'Cliff Curtis'],
-      @movie_dh.amazon.hdoc('itemattributes/actor', nil)      
+      @movie_dh.amazon.get('itemattributes/actor', nil)      
   end
 end

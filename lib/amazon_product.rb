@@ -1,56 +1,51 @@
 require 'hpricot'
 
 class AmazonProduct < ActiveRecord::Base
-#  belongs_to :amazonable, :polymorphic => true
 
-  def hdoc(key, separator = ', ')
+  def get(key, separator = ', ')
     @doc ||= Hpricot.XML(xml)
     values = (@doc/key).collect {|e| e.inner_html }
     values *= separator unless separator.nil?
     values unless values.blank?
   end
 
-  def get(key)
-    hdoc(key)
-  end
-
   def isbn
-    hdoc("itemattributes/isbn")
+    get("itemattributes/isbn")
   end
 
   def title
-    hdoc("itemattributes/title")
+    get("itemattributes/title")
   end
 
   def author
-    hdoc("itemattributes/author")
+    get("itemattributes/author")
   end
 
   def binding
-    hdoc("itemattributes/binding")
+    get("itemattributes/binding")
   end
 
   def price
-    hdoc("itemattributes/listprice/amount")
+    get("itemattributes/listprice/amount")
   end
 
   def pages
-    hdoc("itemattributes/numberofpages")
+    get("itemattributes/numberofpages")
   end
 
   def small_image_url
-    hdoc("smallimage/url")
+    get("smallimage/url")
   end
 
   def medium_image_url
-    hdoc("mediumimage/url")
+    get("mediumimage/url")
   end
 
   def large_image_url
-    hdoc("largeimage/url")
+    get("largeimage/url")
   end
 
   def detail_url
-    hdoc("detailpageurl")
+    get("detailpageurl")
   end
 end
