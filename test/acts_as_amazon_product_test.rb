@@ -132,4 +132,12 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     assert_equal ['Bruce Willis', 'Timothy Olyphant', 'Justin Long', 'Maggie Q', 'Cliff Curtis'],
       @movie_dh.amazon.get('itemattributes/actor', nil)      
   end
+
+  def test_method_missing
+    assert_equal 'Bruce Willis, Timothy Olyphant, Justin Long, Maggie Q, Cliff Curtis', @movie_dh.amazon.actor
+  end
+
+  def test_method_missing_with_separator
+    assert_equal 'Bruce Willis | Timothy Olyphant | Justin Long | Maggie Q | Cliff Curtis', @movie_dh.amazon.actor(' | ')
+  end
 end

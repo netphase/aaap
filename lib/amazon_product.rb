@@ -48,4 +48,13 @@ class AmazonProduct < ActiveRecord::Base
   def detail_url
     get("detailpageurl")
   end
+
+  def method_missing(symbol, *args)
+    begin
+      super(symbol, *args)
+    rescue NoMethodError
+      get(symbol, *args)
+    end
+  end
+
 end
