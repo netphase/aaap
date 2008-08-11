@@ -1,3 +1,13 @@
+= 1.3
+=== 11th August, 2008
+* (Thanks to David Eisinger for changes in this release)
+* Test wasn't dropping magazines table, causing error when running tests multiple times
+* Added access_key and associate_tag to movie and magazine in tests; not setting them was causing tests to fail without ENV variables
+* Added a generator to create the amazon_products database migration
+* Changed the Hpricot search method: If multiple values, returns them as a comma-separated string; Returns nil if no value found
+* Got rid of the amazon_product#hdoc method, moved functionality in to #get
+* Added method_missing to amazon_product to search XML based on method name
+
 = 1.2
 === 24th April, 2008
 * Accepts search_index parameter to work better with Magazines (patch from Parker Morse)
