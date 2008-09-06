@@ -14,13 +14,16 @@ ActiveRecord::Base.establish_connection(config["database"])
 
 ActiveRecord::Base.connection.drop_table :amazon_products rescue nil
 ActiveRecord::Base.connection.drop_table :books rescue nil
+ActiveRecord::Base.connection.drop_table :ean_books rescue nil
 ActiveRecord::Base.connection.drop_table :movies rescue nil
 ActiveRecord::Base.connection.drop_table :magazines rescue nil
 
 ActiveRecord::Base.connection.create_table :books do |t|
+  t.column :type, :string
   t.column :title, :string
   t.column :author, :string
-  t.column :isbn, :string  
+  t.column :isbn, :string
+  t.column :ean, :string
 end
 
 ActiveRecord::Base.connection.create_table :movies do |t|
@@ -47,6 +50,12 @@ class Book < ActiveRecord::Base
     :access_key => @@access_key, :associate_tag => @@associate_tag)
 end
 
+class EANBook < Book
+  acts_as_amazon_product(
+    :asin => 'ean', :name => 'title',
+    :access_key => @@access_key, :associate_tag => @@associate_tag)
+end
+
 class Movie < ActiveRecord::Base
   acts_as_amazon_product :access_key => @@access_key, :associate_tag => @@associate_tag
 end
@@ -65,8 +74,8 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     @book_gtd = Book.create(:title => 'Getting Things Done', :author => 'Dude', :isbn => '0142000280')
     @book_ror = Book.create(:title => 'Rails Recipes')
     @book_perl = Book.create(:title => 'Perl')
+    @book_eg = EANBook.create(:ean => '9780765342294')
     @movie_dh = Movie.create(:name=>'Live Free or Die Hard', :asin=>'B000VNMMRA')
-    Magazine.delete_all
     @mag_lci = Magazine.create(:name => 'La Cucina Italiana')
   end
   
@@ -85,6 +94,11 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     assert_equal("B00009XFML", @mag_lci.amazon.asin)
   end
   
+  def test_lookup_by_nonstandard_id
+    assert_not_nil(@book_eg.amazon)
+    assert_equal("Ender's Game", @book_eg.amazon.title)
+  end
+
   def test_small_image
     assert_not_nil(@book_gtd.amazon)
     assert_match(/4104N6ME70L\._SL75_\.jpg/, @book_gtd.amazon.small_image_url)

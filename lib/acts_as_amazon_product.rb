@@ -57,7 +57,12 @@ module Netphase
             
             if !asin.nil? && asin.length > 0
               # puts "Looking up #{asin}"
-              res = Amazon::Ecs.item_lookup(self.send(self.amazon_asin), :response_group => 'Medium')
+              options = { :response_group => 'Medium' }
+              unless self.amazon_asin == 'asin'
+                options[:id_type] = self.amazon_asin.upcase
+                options[:search_index] = self.amazon_search_index
+              end
+              res = Amazon::Ecs.item_lookup(self.send(self.amazon_asin), options)
               
               self.amazon_product =
                 AmazonProduct.new(:xml => res.doc.to_html, :asin => res.doc.at('asin').inner_html)
