@@ -99,6 +99,16 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     assert_equal("Ender's Game", @book_eg.amazon.title)
   end
 
+  def test_invalid_isbn
+    b = Book.create(:isbn => '12345')
+    assert_nil(b.amazon)
+  end
+
+  def test_invalid_title
+    b = Book.create(:title => "AAAAAAAA")
+    assert_nil(b.amazon)
+  end
+
   def test_small_image
     assert_not_nil(@book_gtd.amazon)
     assert_match(/4104N6ME70L\._SL75_\.jpg/, @book_gtd.amazon.small_image_url)

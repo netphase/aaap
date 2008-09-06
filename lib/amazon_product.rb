@@ -1,6 +1,7 @@
 require 'hpricot'
 
 class AmazonProduct < ActiveRecord::Base
+  validates_presence_of :asin
 
   def get(key, separator = ', ')
     @doc ||= Hpricot.XML(xml)

@@ -39,27 +39,27 @@ module Netphase
       module InstanceMethods
         def amazon
           if self.amazon_product.nil?
-            asin = self.send(self.amazon_asin)
-            name = self.send(self.amazon_name)
+            asin = self.send(self.amazon_asin) rescue nil
+            name = self.send(self.amazon_name) rescue nil
+            options = { :response_group => 'Medium' }
             
             if !asin.blank?
-              options = { :response_group => 'Medium' }
               unless self.amazon_asin == 'asin'
                 options[:id_type] = self.amazon_asin.upcase
                 options[:search_index] = self.amazon_search_index
               end
               res = Amazon::Ecs.item_lookup(self.send(self.amazon_asin), options)
-              self.create_amazon_product(:xml => res.doc.to_html, :asin => res.doc.at('asin').inner_html)
+              self.create_amazon_product(:xml => res.doc.to_html, :asin => res.doc.at('asin') && res.doc.at('asin').inner_html)
             elsif !name.blank?
-              res = Amazon::Ecs.item_search(self.send(self.amazon_name), :search_index => self.amazon_search_index, :response_group => 'Medium')
+              res = Amazon::Ecs.item_search(self.send(self.amazon_name), options.merge(:search_index => self.amazon_search_index))
               res = res.doc.at('items/item')
-              self.create_amazon_product(:xml => res.to_html,
-                :asin => (res.at('itemattributes/isbn').nil? ? res.at('asin').inner_html : res.at('itemattributes/isbn').inner_html))
+              asin = res.at('itemattributes/isbn') || res.at('asin') unless res.nil?
+              self.create_amazon_product(:xml => res && res.to_html, :asin => asin && asin.inner_html)
             else
               logger.error "No known attributes to search by"
             end            
           end
-          self.amazon_product
+          self.amazon_product if self.amazon_product.valid?
         end
 
         def after_save
