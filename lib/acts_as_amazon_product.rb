@@ -1,7 +1,4 @@
-# ActsAsAmazonProduct
-
 require 'rubygems'
-#require 'active_support'
 require 'active_record'
 require 'amazon/ecs'
 require 'amazon_product'
@@ -15,7 +12,6 @@ module Netphase
       end
 
       module ClassMethods
-        
         def acts_as_amazon_product(options = {})
           defaults = {
             :asin => 'asin',
@@ -36,53 +32,35 @@ module Netphase
           
           has_one :amazon_product, :as => :amazonable   #, :dependent => :delete
           include Netphase::Acts::Amazonable::InstanceMethods
-          extend Netphase::Acts::Amazonable::SingletonMethods
         end
-                
-      end
-      
-      # This module contains class methods
-      module SingletonMethods
-        
       end
       
       # This module contains instance methods
       module InstanceMethods
-        
         def amazon
           if self.amazon_product.nil?
-            asin = (self.respond_to?('amazon_asin')) ? self.send(self.amazon_asin) : nil
-            name = (self.respond_to?('amazon_name')) ? self.send(self.amazon_name) : nil
-            search_index = (self.respond_to?('amazon_search_index')) ? self.amazon_search_index : 'Books'
+            asin = self.send(self.amazon_asin)
+            name = self.send(self.amazon_name)
             
-            if !asin.nil? && asin.length > 0
-              # puts "Looking up #{asin}"
+            if !asin.blank?
               options = { :response_group => 'Medium' }
               unless self.amazon_asin == 'asin'
                 options[:id_type] = self.amazon_asin.upcase
                 options[:search_index] = self.amazon_search_index
               end
               res = Amazon::Ecs.item_lookup(self.send(self.amazon_asin), options)
-              
-              self.amazon_product =
-                AmazonProduct.new(:xml => res.doc.to_html, :asin => res.doc.at('asin').inner_html)
-              self.amazon_product.save
-            elsif !name.nil? && name.length > 0
-              # puts "Searching for #{name}"
-              res = Amazon::Ecs.item_search(self.send(self.amazon_name), :search_index => self.amazon_search_index, :response_group => 'Medium') #, :sort => 'salesrank'
+              self.create_amazon_product(:xml => res.doc.to_html, :asin => res.doc.at('asin').inner_html)
+            elsif !name.blank?
+              res = Amazon::Ecs.item_search(self.send(self.amazon_name), :search_index => self.amazon_search_index, :response_group => 'Medium')
               res = res.doc.at('items/item')
-              self.amazon_product =
-                AmazonProduct.new(:xml => res.to_html, :asin => (res.at('itemattributes/isbn').nil? ? res.at('asin').inner_html : res.at('itemattributes/isbn').inner_html))
-              self.amazon_product.save
+              self.create_amazon_product(:xml => res.to_html,
+                :asin => (res.at('itemattributes/isbn').nil? ? res.at('asin').inner_html : res.at('itemattributes/isbn').inner_html))
             else
               logger.error "No known attributes to search by"
             end            
           end
           self.amazon_product
         end
-        
-        #def method_missing(method, *args)
-        #end
 
         def after_save
           unless self.amazon_product.nil?
@@ -90,9 +68,7 @@ module Netphase
             self.reload
           end
         end
-                
       end
-      
     end
   end
 end
