@@ -3,7 +3,7 @@ require 'yaml'
 
 require File.expand_path(File.dirname(__FILE__) + "/../lib/acts_as_amazon_product")
 
-#require File.expand_path(File.dirname(__FILE__) + "/../init")
+require File.expand_path(File.dirname(__FILE__) + "/../init")
 
 config = open(File.dirname(__FILE__) + "/../test/config.yml") { |f| YAML.load(f.read)}
 ActiveRecord::Base.establish_connection(config["database"])
@@ -137,8 +137,9 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     assert_not_nil(@book_perl.amazon)
     isbn = @book_perl.amazon.isbn
     @book_perl.title = "Websters"
+    @book_perl.amazon.destroy
     @book_perl.save
-    assert_not_equal(isbn, @book_perl.amazon.isbn)
+    assert_not_equal(isbn, @book_perl.reload.amazon.isbn)
   end
   
   def test_product_with_all_defaults

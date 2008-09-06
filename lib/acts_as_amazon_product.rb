@@ -61,19 +61,7 @@ module Netphase
           end
           self.amazon_product if self.amazon_product.valid?
         end
-
-        def after_save
-          unless self.amazon_product.nil?
-            self.amazon_product.destroy
-            self.reload
-          end
-        end
       end
     end
   end
 end
-
-ActiveRecord::Base.class_eval do
-  include Netphase::Acts::Amazonable
-end
-
