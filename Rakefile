@@ -10,7 +10,7 @@ include FileUtils
 NAME = "acts_as_amazon_product"
 # REV = File.read(".svn/entries")[/committed-rev="(\d+)"/, 1] rescue nil
 # VERS = ENV['VERSION'] || ("1.1" + (REV ? ".#{REV}" : ""))
-VERS = ENV['VERSION'] || "1.3"
+VERS = ENV['VERSION'] || "1.3.1"
 CLEAN.include ['**/.*.sw?', '*.gem', '.config', 'test/test.log']
 
 desc 'Default: run unit tests.'
@@ -34,10 +34,11 @@ spec = Gem::Specification.new do |s|
     s.version   =   VERS
     s.author    =   "Scott Nedderman"
     s.email     =   "scott@netphase.com"
+    s.homepage  =   "http://netphase.com"
     s.summary   =   "A package for simplifying use of the Amazon/ECS API"
     s.files     =   FileList['lib/*.rb', 'test/*'].to_a.reject {|f| f.match /config\.yml/ }
     s.require_path  =   "lib"
-    s.autorequire   =   "acts_as_amazon_product"
+    # s.autorequire   =   "acts_as_amazon_product"
     s.test_files = Dir.glob('tests/*.rb')
     s.has_rdoc  =   true
     s.extra_rdoc_files  =   ["README"]
