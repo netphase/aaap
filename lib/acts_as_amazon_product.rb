@@ -58,7 +58,7 @@ module Netphase
             unless by_title
               res = Amazon::Ecs.item_lookup(title_or_asin)
             else
-              res = Amazon::Ecs.item_search(title_or_asin)
+              res = Amazon::Ecs.item_search(title_or_asin, :search_index => self.amazon_search_index)
             end
             create_instance_from_amazon(res.items[0])
           rescue
