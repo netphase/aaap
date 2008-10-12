@@ -26,7 +26,7 @@ module Netphase
             :response_group => 'Medium',
             :auto_load_fields => {:title => 'title', :isbn => 'asin', :publisher_name => 'manufacturer', 
               :author => 'author', :binding => 'binding', :list_price => 'listprice/amount', :pages => 'numberofpages',
-              :small_image_url => 'smallimage/url', :medium_image_url => 'mediumimage/url', 
+              :description => 'content', :small_image_url => 'smallimage/url', :medium_image_url => 'mediumimage/url', 
               :large_image_url => 'largeimage/url', :detail_url => 'detailpageurl'},
             :ignore_fields => []
           }
