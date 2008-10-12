@@ -13,11 +13,14 @@ Run the following to create the migration:
 
 == Using acts_as_amazon_product
 
-Add the "acts_as" line to your model.  Only :access_key is required.  The :asin and 
+Add the "acts_as" line to your model.  Only :access_key is required.  The :asin and
 :name assignments override what attributes in your class should be used for a direct 
-lookup (item_looup) or general search (item_search).  If no value is assigned to :asin 
+lookup (item_lookup) or general search (item_search).  If no value is assigned to :asin 
 then a general search is made and the first item (sorted by salesrank) is assigned 
 (this functionality will likely change).
+
+There are two ways to use Acts as Amazon Product.  The first is to simply allow all of the Amazon data for your product
+to be stored in the AmazonProduct object:
 
 	require 'acts_as_amazon_product'
 
@@ -25,8 +28,15 @@ then a general search is made and the first item (sorted by salesrank) is assign
 	  acts_as_amazon_product :asin => 'isbn', :name => 'title', 
 				:access_key => '0123456', :associate_tag => 'assoc-20'
 	end
+	
+Other interesting options for the acts_as_amazon call:
 
-You can now access the Amazon data in your views like so (see):
+:search_index => 'Books' (default value if not specified)
+:response_group => 'Medium' (default value if not specified) 
+:auto_load_fields => see below
+:ignore_fields => see below
+
+You can now access the Amazon data in your views like so:
 
 	@book = Book.new(:title => 'Getting Things Done')
 	@book.amazon.isbn
@@ -36,6 +46,73 @@ You can now access the Amazon data in your views like so (see):
 	
 	or
 	@book.amazon.get('itemattributes/foobar')
+	
+The second way to use Acts as Amazon Product is to load the Amazon data directly into an existing object in your application.
+You can elect to have the Amazon data loaded into a new, unsaved object, or go one step further and allow
+Acts as Amazon Product to load the data and save the loaded object all in one shot.  The mapping between the 
+Amazon fields and your object are declared by passing a hash called auto_load_fields to the acts_as_amazon_product 
+call as shown below:
+ 
+ require 'acts_as_amazon_product'
+ 
+ class LocalBook < ActiveRecord::Base
+   acts_as_amazon_product(
+     :asin => 'isbn', :name => 'title', 
+     :access_key => '0123456', :associate_tag => 'assoc-20',
+     :auto_load_fields => {:title => 'title', :isbn => 'asin', :publisher_name => 'manufacturer', :author => 'author'}
+   ) 
+ end
+ 
+The keys in the auto_load_fields hash are the fields in your object, and the values are their Amazon equivalents. 
+In the true Rails convention over configuration spirit, we have included some of the most popular auto load fields as 
+defaults. If your object contains the following attributes, they will automatically be loaded with their Amazon equivalents:
+
+:auto_load_fields => {:title => 'title', :isbn => 'asin', :publisher_name => 'manufacturer', 
+  :author => 'author', :binding => 'binding', :list_price => 'listprice/amount', :pages => 'numberofpages',
+  :small_image_url => 'smallimage/url', :medium_image_url => 'mediumimage/url', 
+  :large_image_url => 'largeimage/url', :detail_url => 'detailpageurl'}
+  
+Don't worry if your object does not have some or most of these fields; Acts as Amazon Product is smart enough to check to see 
+if the method exists before attempting to load up the Amazon value.  
+
+Now, if by some coincidence you have some fields in your local object that have the same name as our auto_load defaults, you
+can choose to specifically ignore those fields using, you guessed it, :ignore_fields.  :ignore_fields is a simple array of 
+fields in your object that you do NOT want to be replaced with the Amazon equivalent.  You would specify them like this:
+
+  acts_as_amazon_product(
+    :asin => 'isbn', :name => 'title', 
+    :access_key => '0123456', :associate_tag => 'assoc-20',
+    :ignore_fields => [:small_image_url, :medium_image_url]
+  )
+
+In this instance, the object in question would load Amazon info for any of the default fields that the object has, with the 
+exception of the small_image_url and medium_image_url values.
+
+To load the Amazon values into your object for local storage, you may call the following methods:
+
+load_from_amazon(title_or_asin, by_title = false)
+load_from_amazon!(title_or_asin, by_title = false)
+
+The two methods do exactly the same thing, except the first simply returns a new, unsaved object with its Amazon-like fields
+loaded with their appropriate Amazon values.  The second version (load_from_amazon!) goes one step further and saves the 
+object for good measure.
+
+You may pass either an isbn (asin) or a title in.  If you are passing a title, you need to specify that you are passing a 
+title by also passing true as the second parameter so we will perform an item_search rather than an item_lookup.  Note that 
+passing a title is risky business, since currently the code will take the first result returned and load that into your 
+object. So unless your title is unique, I would recommend sticking with the isbn (asin) value.  Since that is the default,
+all you need to do would be something like this:
+
+@local_book = LocalBook.load_from_amazon('1590598415')
+
+If your object was similar to the LocalBook object in our example, for instance, you would not need to specify the 
+auto_load_fields in the acts_as call at all.  The title, isbn, publisher_name and author methods would automatically 
+be called once you call load_from_amazon, and their values populated appropriately.
+
+It is important to note that if you call load_from_amazon with an invalid asin, you will simply get back an empty object.
+
+Now, calling load_from_amazon still allows you to take advantage of the other Acts as Amazon features, like the dynamic 
+loading of Amazon attributes on the fly by using the various amazon.foo methods as described above.
 
 == Unit tests
 

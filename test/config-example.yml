@@ -1,8 +1,7 @@
-database:  
+database:
   adapter: sqlite3
   dbfile: test/test.db
-
+ 
 amazon:
   access_key: 1AAAABBBBCCCCDDDDEE2
   associate_tag: assoc-20
-

@@ -16,6 +16,7 @@ ActiveRecord::Base.connection.drop_table :amazon_products rescue nil
 ActiveRecord::Base.connection.drop_table :books rescue nil
 ActiveRecord::Base.connection.drop_table :movies rescue nil
 ActiveRecord::Base.connection.drop_table :magazines rescue nil
+ActiveRecord::Base.connection.drop_table :local_books rescue nil
 
 ActiveRecord::Base.connection.create_table :books do |t|
   t.column :title, :string
@@ -31,6 +32,15 @@ end
 ActiveRecord::Base.connection.create_table :magazines do |t|
   t.column :name, :string
   t.column :asin, :string
+end
+
+ActiveRecord::Base.connection.create_table :local_books do |t|
+  t.column :title, :string
+  t.column :author, :string
+  t.column :isbn, :string 
+  t.column :publisher_name, :string 
+  t.column :small_image_url, :string
+  t.column :medium_image_url, :string
 end
 
 ActiveRecord::Base.connection.create_table :amazon_products do |t|  # , :id => false
@@ -56,6 +66,13 @@ class Magazine < ActiveRecord::Base
     :associate_tag => @@associate_tag
 end
 
+class LocalBook < ActiveRecord::Base
+  acts_as_amazon_product(
+    :asin => 'isbn', :name => 'title', 
+    :access_key => @@access_key, :associate_tag => @@associate_tag, :ignore_fields => [:small_image_url, :medium_image_url]
+  ) 
+end
+
 AmazonProduct.delete_all
 
 class ActAsAmazonProductTest < Test::Unit::TestCase
@@ -68,6 +85,9 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     @movie_dh = Movie.create(:name=>'Live Free or Die Hard', :asin=>'B000VNMMRA')
     Magazine.delete_all
     @mag_lci = Magazine.create(:name => 'La Cucina Italiana')
+    LocalBook.delete_all
+    @local_rails = LocalBook.load_from_amazon('1590598415')
+    @local_roots = LocalBook.load_from_amazon!('Roots', true)
   end
   
   def test_isbn
@@ -140,4 +160,42 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
   def test_method_missing_with_separator
     assert_equal 'Bruce Willis | Timothy Olyphant | Justin Long | Maggie Q | Cliff Curtis', @movie_dh.amazon.actor(' | ')
   end
+  
+  def test_load_local_book
+    assert_not_nil(@local_rails.title)
+    assert_not_nil(@local_rails.isbn)
+    assert_not_nil(@local_rails.publisher_name)
+    assert_not_nil(@local_rails.author)
+    assert_not_nil(@local_roots.title)
+    assert_not_nil(@local_roots.isbn)
+    assert_not_nil(@local_roots.publisher_name)
+    assert_not_nil(@local_roots.author)
+    assert_equal "Practical Rails Social Networking Sites (Expert's Voice)", @local_rails.title
+    assert_equal '0882667033', @local_roots.isbn
+  end
+  
+  def test_new_versus_saved_load 
+    assert_equal @local_rails.new_record?, true
+    assert_equal @local_roots.new_record?, false
+  end
+  
+  def test_lack_of_initial_amazon_product_for_local
+    @local_woody = LocalBook.load_from_amazon!('0736412662')
+    assert_nil AmazonProduct.find_by_amazonable_id(@local_woody.id)
+  end
+  
+  def test_ignore_fields
+    assert_nil @local_rails.small_image_url
+    assert_nil @local_rails.medium_image_url
+    assert_nil @local_roots.small_image_url
+    assert_nil @local_roots.medium_image_url
+  end
+  
+  def test_locals_load_amazon_attributes_if_needed
+    assert_not_nil @local_rails.amazon.binding
+    assert_not_nil @local_roots.amazon.binding
+    assert_equal @local_rails.amazon.binding, 'Paperback'
+    assert_equal @local_roots.amazon.binding, 'Paperback'
+  end
+  
 end

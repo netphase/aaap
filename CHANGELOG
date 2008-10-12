@@ -1,3 +1,9 @@
+= 1.4
+=== 11th October, 2008
+* Added load_from_amazon and load_from_amazon! methods to load up Amazon attributes into a local object directly (see the README for usage)
+* Added new tests for the above functionality
+* Changed the response group so that it is a passed-in option, with the default being 'Medium' rather than having it hardcoded.
+ 
 = 1.3
 === 11th August, 2008
 * (Thanks to David Eisinger for changes in this release)
