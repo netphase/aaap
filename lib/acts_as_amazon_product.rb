@@ -24,7 +24,8 @@ module Netphase
               :author => 'author', :binding => 'binding', :list_price => 'listprice/amount', :pages => 'numberofpages',
               :description => 'content', :small_image_url => 'smallimage/url', :medium_image_url => 'mediumimage/url', 
               :large_image_url => 'largeimage/url', :detail_url => 'detailpageurl'},
-            :ignore_fields => []
+            :ignore_fields => [],
+            :auto_delete_amazon => true
           }
           options = defaults.merge options
 
@@ -37,8 +38,9 @@ module Netphase
           write_inheritable_attribute(:amazon_associate_key, options[:associate_key])
           write_inheritable_attribute(:auto_load_fields, options[:auto_load_fields])
           write_inheritable_attribute(:ignore_fields, options[:ignore_fields])
+          write_inheritable_attribute(:auto_delete_amazon, options[:auto_delete_amazon])
           class_inheritable_reader :amazon_asin, :amazon_name, :amazon_search_index, :amazon_associate_key
-          class_inheritable_reader :auto_load_fields, :ignore_fields
+          class_inheritable_reader :auto_load_fields, :ignore_fields, :auto_delete_amazon
           
           has_one :amazon_product, :as => :amazonable   #, :dependent => :delete
           include Netphase::Acts::Amazonable::InstanceMethods
@@ -106,6 +108,13 @@ module Netphase
             end            
           end
           self.amazon_product if self.amazon_product.valid?
+        end
+        
+        def after_save
+          if self.auto_delete_amazon && !self.amazon_product.nil?
+            self.amazon_product.destroy
+            self.reload
+          end
         end
       end
     end
