@@ -125,7 +125,7 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
   end
 
   def test_invalid_title
-    b = Book.create(:title => "AAAAAAAA")
+    b = Book.create(:title => "AQAQAQAQ")
     assert_nil(b.amazon)
   end
 
@@ -164,26 +164,26 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
   
   def test_product_with_all_defaults
     assert_not_nil(@movie_dh.amazon)
-    assert_equal 'Bruce Willis, Timothy Olyphant, Justin Long, Maggie Q, Cliff Curtis',
+    assert_equal 'Bruce Willis, Justin Long, Timothy Olyphant, Maggie Q, Cliff Curtis',
       @movie_dh.amazon.get('itemattributes/actor')
   end
   
   def test_accepts_a_custom_separator
-    assert_equal 'Bruce Willis | Timothy Olyphant | Justin Long | Maggie Q | Cliff Curtis',
+    assert_equal 'Bruce Willis | Justin Long | Timothy Olyphant | Maggie Q | Cliff Curtis',
       @movie_dh.amazon.get('itemattributes/actor', ' | ')      
   end
   
   def test_returns_array_if_separator_is_nil
-    assert_equal ['Bruce Willis', 'Timothy Olyphant', 'Justin Long', 'Maggie Q', 'Cliff Curtis'],
+    assert_equal ["Bruce Willis", "Justin Long", "Timothy Olyphant", "Maggie Q", "Cliff Curtis"],
       @movie_dh.amazon.get('itemattributes/actor', nil)      
   end
 
   def test_method_missing
-    assert_equal 'Bruce Willis, Timothy Olyphant, Justin Long, Maggie Q, Cliff Curtis', @movie_dh.amazon.actor
+    assert_equal 'Bruce Willis, Justin Long, Timothy Olyphant, Maggie Q, Cliff Curtis', @movie_dh.amazon.actor
   end
 
   def test_method_missing_with_separator
-    assert_equal 'Bruce Willis | Timothy Olyphant | Justin Long | Maggie Q | Cliff Curtis', @movie_dh.amazon.actor(' | ')
+    assert_equal 'Bruce Willis | Justin Long | Timothy Olyphant | Maggie Q | Cliff Curtis', @movie_dh.amazon.actor(' | ')
   end
   
   def test_load_local_book

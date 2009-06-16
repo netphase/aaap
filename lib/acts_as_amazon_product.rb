@@ -43,6 +43,7 @@ module Netphase
           class_inheritable_reader :auto_load_fields, :ignore_fields, :auto_delete_amazon
           
           has_one :amazon_product, :as => :amazonable   #, :dependent => :delete
+          extend Netphase::Acts::Amazonable::SingletonMethods
           include Netphase::Acts::Amazonable::InstanceMethods
         end
 

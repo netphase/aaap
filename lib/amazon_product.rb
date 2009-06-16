@@ -57,5 +57,14 @@ class AmazonProduct < ActiveRecord::Base
       get(symbol, *args)
     end
   end
-
+  
+  def respond_to?(method_id, include_private = false)
+    unless self.xml.blank? 
+     doc = Hpricot.XML(xml) 
+     return (method_id.to_s.index(/[\W]/) || doc.at(method_id.to_s).nil?) ? super : true
+    else         
+      super
+    end
+  end
+  
 end
