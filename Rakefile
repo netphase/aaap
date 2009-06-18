@@ -70,7 +70,7 @@ end
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "acts_as_eventable"
+    gemspec.name = "acts_as_amazon_product"
     gemspec.summary = "A package for simplifying use of the Amazon/ECS API"
     gemspec.email = "scott@netphase.com"
     gemspec.homepage = "http://github.com/netphase/aaap"
