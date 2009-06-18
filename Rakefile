@@ -67,3 +67,18 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "acts_as_eventable"
+    gemspec.summary = "A package for simplifying use of the Amazon/ECS API"
+    gemspec.email = "scott@netphase.com"
+    gemspec.homepage = "http://github.com/netphase/aaap"
+    gemspec.authors = ["Scott Nedderman","Chris Beck"]
+    gemspec.add_dependency("amazon-ecs", ">=0.5.1")
+    gemspec.files.exclude 'test/config.yml'
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+end
+
