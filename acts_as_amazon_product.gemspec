@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
      "README",
      "Rakefile",
      "VERSION",
+     "acts_as_amazon_product.gemspec",
      "generators/acts_as_amazon_product_migration/acts_as_amazon_product_migration_generator.rb",
      "generators/acts_as_amazon_product_migration/templates/migration.rb",
      "init.rb",
