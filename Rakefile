@@ -77,6 +77,7 @@ begin
     gemspec.authors = ["Scott Nedderman","Chris Beck"]
     gemspec.add_dependency("amazon-ecs", ">=0.5.1")
     gemspec.files.exclude 'test/config.yml'
+    
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
