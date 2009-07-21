@@ -10,7 +10,7 @@ include FileUtils
 NAME = "acts_as_amazon_product"
 # REV = File.read(".svn/entries")[/committed-rev="(\d+)"/, 1] rescue nil
 # VERS = ENV['VERSION'] || ("1.1" + (REV ? ".#{REV}" : ""))
-VERS = ENV['VERSION'] || "1.4"
+VERS = ENV['VERSION'] || "1.4.1"
 CLEAN.include ['**/.*.sw?', '*.gem', '.config', 'test/test.log']
 
 desc 'Default: run unit tests.'

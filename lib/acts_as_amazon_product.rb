@@ -79,7 +79,7 @@ module Netphase
           newbie = self.new
           self.auto_load_fields.each do |key, value|
             if newbie.respond_to?(key.to_s) && !self.ignore_fields.include?(key)
-              newbie.send key.to_s + '=', item.get(value)
+              newbie.send key.to_s + '=', CGI.unescapeHTML(item.get(value))
             end
           end
           return newbie
