@@ -127,3 +127,5 @@ module Netphase
     end
   end
 end
+
+ActiveRecord::Base.send(:include, Netphase::Acts::Amazonable)
