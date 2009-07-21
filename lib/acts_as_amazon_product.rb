@@ -17,6 +17,7 @@ module Netphase
             :asin => 'asin',
             :name => 'name',
             :access_key => ENV['AMAZON_ACCESS_KEY_ID'],
+            :secret_key => ENV['AMAZON_SECRET_KEY'],
             :associate_tag => ENV['AMAZON_ASSOCIATE_TAG'],
             :search_index => 'Books',
             :response_group => 'Medium',
@@ -29,17 +30,22 @@ module Netphase
           }
           options = defaults.merge options
 
-          Amazon::Ecs.options = {:aWS_access_key_id => options[:access_key], 
-            :associate_tag => options[:associate_tag], :response_group => options[:response_group]}
+          Amazon::Ecs.options = {
+            :aWS_access_key_id => options[:access_key],
+            :aWS_secret_key => options[:secret_key],
+            :associate_tag => options[:associate_tag], 
+            :response_group => options[:response_group]
+          }
 
           write_inheritable_attribute(:amazon_asin, options[:asin])    
           write_inheritable_attribute(:amazon_name, options[:name])
-          write_inheritable_attribute(:amazon_search_index, options[:search_index])    
-          write_inheritable_attribute(:amazon_associate_key, options[:associate_key])
+          write_inheritable_attribute(:amazon_search_index, options[:search_index])
+          write_inheritable_attribute(:amazon_associate_tag, options[:associate_tag])
           write_inheritable_attribute(:auto_load_fields, options[:auto_load_fields])
           write_inheritable_attribute(:ignore_fields, options[:ignore_fields])
           write_inheritable_attribute(:auto_delete_amazon, options[:auto_delete_amazon])
-          class_inheritable_reader :amazon_asin, :amazon_name, :amazon_search_index, :amazon_associate_key
+          class_inheritable_reader :amazon_asin, :amazon_name, :amazon_search_index
+          class_inheritable_reader :amazon_associate_tag
           class_inheritable_reader :auto_load_fields, :ignore_fields, :auto_delete_amazon
           
           has_one :amazon_product, :as => :amazonable   #, :dependent => :delete

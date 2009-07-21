@@ -1,3 +1,11 @@
+= 2.1
+=== 20th July, 2009
+* Support for authenticated calls to Amazon
+
+= 2.0
+=== 18th June, 2009
+* Setup with Jeweler for packaging and deployment
+
 = 1.4
 === 11th October, 2008
 * Added load_from_amazon and load_from_amazon! methods to load up Amazon attributes into a local object directly (see the README for usage)

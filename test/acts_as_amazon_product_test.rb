@@ -2,15 +2,14 @@ require 'test/unit'
 require 'yaml'
 
 require File.expand_path(File.dirname(__FILE__) + "/../lib/acts_as_amazon_product")
-
 require File.expand_path(File.dirname(__FILE__) + "/../init")
 
-config = open(File.dirname(__FILE__) + "/../test/config.yml") { |f| YAML.load(f.read)}
-ActiveRecord::Base.establish_connection(config["database"])
+@@config = open(File.dirname(__FILE__) + "/../test/config.yml") { |f| YAML.load(f.read)}
+ActiveRecord::Base.establish_connection(@@config["database"])
 
-#Amazon::Ecs.options = {:aWS_access_key_id => config['amazon']['access_key']}
-@@access_key = config['amazon']['access_key']
-@@associate_tag = config['amazon']['associate_tag']
+ENV['AMAZON_ACCESS_KEY_ID'] = @@config['amazon']['access_key']
+ENV['AMAZON_SECRET_KEY'] = @@config['amazon']['secret_key']
+ENV['AMAZON_ASSOCIATE_TAG'] = @@config['amazon']['associate_tag']
 
 ActiveRecord::Base.connection.drop_table :amazon_products rescue nil
 ActiveRecord::Base.connection.drop_table :books rescue nil
@@ -54,31 +53,31 @@ ActiveRecord::Base.connection.create_table :amazon_products do |t|  # , :id => f
   t.column :amazonable_type, :string, :limit => 15, :default => "", :null => false
 end
 
+
+
 class Book < ActiveRecord::Base
-  acts_as_amazon_product(
-    :asin => 'isbn', :name => 'title', 
-    :access_key => @@access_key, :associate_tag => @@associate_tag)
+  acts_as_amazon_product(:asin => 'isbn', :name => 'title')
 end
 
 class EANBook < Book
-  acts_as_amazon_product(
-    :asin => 'ean', :name => 'title',
-    :access_key => @@access_key, :associate_tag => @@associate_tag)
+  acts_as_amazon_product(:asin => 'ean', :name => 'title' )
 end
 
 class Movie < ActiveRecord::Base
-  acts_as_amazon_product :access_key => @@access_key, :associate_tag => @@associate_tag
+  acts_as_amazon_product 
 end
 
 class Magazine < ActiveRecord::Base
-  acts_as_amazon_product :search_index => 'Magazines', :access_key => @@access_key,
-    :associate_tag => @@associate_tag
+  acts_as_amazon_product :search_index => 'Magazines'
 end
 
 class LocalBook < ActiveRecord::Base
   acts_as_amazon_product(
+    :access_key => @@config['amazon']['access_key'], 
+    :secret_key => @@config['amazon']['secret_key'], 
+    :associate_tag => @@config['amazon']['associate_tag'], 
     :asin => 'isbn', :name => 'title', 
-    :access_key => @@access_key, :associate_tag => @@associate_tag, :ignore_fields => [:small_image_url, :medium_image_url]
+    :ignore_fields => [:small_image_url, :medium_image_url]
   ) 
 end
 
@@ -97,6 +96,10 @@ class ActAsAmazonProductTest < Test::Unit::TestCase
     LocalBook.delete_all
     @local_rails = LocalBook.load_from_amazon('1590598415')
     @local_roots = LocalBook.load_from_amazon!('Roots', true)
+  end
+  
+  def test_associate_tag
+    assert_equal(@@config['amazon']['associate_tag'], Book.amazon_associate_tag)
   end
   
   def test_isbn
