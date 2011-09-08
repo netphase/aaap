@@ -5,7 +5,12 @@ existing model.
 
 == Setup
 
-This code does not require changing any current database tables.  It only requires 
+First install the gem 'acts_as_amazon_product' at the command line or in your IDE.
+Then (e.g. Rails 2.3.8) add the require gem in your environment.rb file as in:
+config.gem 'acts_as_amazon_product'
+Rails 3 can use bundler.
+
+The module does not require changing any current database tables.  It only requires 
 adding one migration for a single new table used to cache responses from Amazon.
 Run the following to create the migration:
 
